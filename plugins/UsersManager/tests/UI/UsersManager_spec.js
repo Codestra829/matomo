@@ -190,7 +190,7 @@ describe("UsersManager", function () {
 
         let concatenatedText = '';
         await page.evaluate(function() {
-          await page.jQuery('#currentUserPassword').each(function() {
+          $('#currentUserPassword').each(function() {
             concatenatedText += $(this).text();
           });
         });
