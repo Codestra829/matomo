@@ -466,14 +466,17 @@ abstract class Controller
         }
 
         if (property_exists($view->config, 'selectable_columns')) {
-            $view->config->selectable_columns = array_merge($view->config->selectable_columns ? : array(), $selectableColumns);
+            $view->config->selectable_columns = array_merge($view->config->selectable_columns ?: array(), $selectableColumns);
         }
 
         $view->config->translations += $translations;
 
-        if ($reportDocumentation) {
-            $view->config->documentation = $reportDocumentation;
+        // Add fallback for missing documentation
+        if (empty($reportDocumentation)) {
+            $reportDocumentation = Piwik::translate('General_NoDocumentationAvailable');
         }
+
+        $view->config->documentation = $reportDocumentation;
 
         return $view;
     }
