@@ -219,9 +219,6 @@ describe("TwoFactorAuth", function () {
         await page.waitForNetworkIdle();
         await page.click('.setupTwoFactorAuthentication .goToStep2');
         await page.waitForNetworkIdle();
-        await page.evaluate(function () {
-            $('#qrcode').parent().hide();
-        });
         const element = await page.$('#content');
         expect(await element.screenshot()).to.matchImage('twofa_setup_step2');
     });
@@ -245,6 +242,10 @@ describe("TwoFactorAuth", function () {
         await page.waitForTimeout(100);
 
         const element = await page.$('#content');
+        expect(await element.screenshot()).to.matchImage('twofa_setup_step3');
+        await page.click('.two-factor-show-2fa-qr-code');
+        expect(await element.screenshot()).to.matchImage('twofa_setup_step3_with_qr_code');
+        await page.click('.two-factor-hide-2fa-qr-code');
         expect(await element.screenshot()).to.matchImage('twofa_setup_step3');
     });
 

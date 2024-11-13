@@ -75,11 +75,29 @@
         </p>
         <p><span v-html="$sanitize(setupAuthenticatorOnDeviceStep2)"></span></p>
         <p>
-          <br />
+          <a
+             class="two-factor-show-2fa-qr-code"
+             href="javascript:;"
+             v-if="!showQrCode"
+             @click.prevent="showQrCode = true">
+              {{ translate('TwoFactorAuth_ShowTwoFAQRCode') }}
+            <span class="icon-chevron-down"></span>
+          </a>
+          <a
+             class="two-factor-hide-2fa-qr-code"
+             href="javascript:;"
+             v-if="showQrCode"
+             @click.prevent="showQrCode = false">
+              {{ translate('TwoFactorAuth_HideTwoFAQRCode') }}
+            <span class="icon-chevron-up"></span>
+          </a>
+        </p>
+        <p>
           <span
             id="qrcode"
             ref="qrcode"
             title
+            v-show="showQrCode"
           />
         </p>
         <p>
@@ -177,6 +195,7 @@ interface SetupTwoFactorAuthState {
   step: number;
   hasDownloadedRecoveryCode: boolean;
   authCode: string;
+  showQrCode: boolean;
 }
 
 const { QRCode, $ } = window;
@@ -218,6 +237,7 @@ export default defineComponent({
       step: 1,
       hasDownloadedRecoveryCode: false,
       authCode: '',
+      showQrCode: false,
     };
   },
   mounted() {
