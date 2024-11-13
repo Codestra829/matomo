@@ -188,11 +188,13 @@ describe("UsersManager", function () {
         await page.waitForTimeout(250);
         await (await page.jQuery('.confirm-password-modal .modal-close.modal-no:visible')).click();
 
-        let concatenatedText = '';
-        await page.evaluate(function() {
+
+        const concatenatedText = await page.evaluate(function() {
+          let text = '';
           $('#currentUserPassword').each(function() {
-            concatenatedText += $(this).text();
+            text += $(this).text();
           });
+          return text;
         });
         expect(concatenatedText.trim()).to.equal('');
     });
