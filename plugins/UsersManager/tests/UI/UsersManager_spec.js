@@ -176,14 +176,12 @@ describe("UsersManager", function () {
         await page.focus('.modal.open #currentUserPassword');
         await page.waitForTimeout(250);
         expect(await modal.screenshot()).to.matchImage({
-          imageName: 'delete_single_confirm',
-          comparisonThreshold: 0.025
+            imageName: 'delete_single_confirm',
+            comparisonThreshold: 0.025
         });
     });
 
     it('should hide the confirmation dialog when cancel is clicked and remove the password if one was entered', async function () {
-        await (await page.jQuery('.deleteuser:eq(0)')).click();
-        const modal = await page.waitForSelector('.modal.open', { visible: true });
         await page.type('.modal.open #currentUserPassword', superUserPassword);
         await page.waitForTimeout(250);
         await (await page.jQuery('.confirm-password-modal .modal-close.modal-no:visible')).click();
@@ -192,24 +190,24 @@ describe("UsersManager", function () {
         await page.waitForSelector('.pagedUsersList:not(.loading)');
 
         const concatenatedText = await page.evaluate(function() {
-          let text = '';
-          $('#currentUserPassword').each(function() {
-            text += $(this).text();
-          });
-          return text;
+            let text = '';
+            $('#currentUserPassword').each(function() {
+              text += $(this).text();
+            });
+            return text;
         });
         expect(concatenatedText.trim()).to.equal('');
     });
 
     it('should show password confirmation when deleting a single user after it was cancelled first', async function () {
-      await (await page.jQuery('.deleteuser:eq(0)')).click();
-      const modal = await page.waitForSelector('.modal.open', { visible: true });
-      await page.focus('.modal.open #currentUserPassword');
-      await page.waitForTimeout(250);
-      expect(await modal.screenshot()).to.matchImage({
-        imageName: 'delete_single_confirm',
-        comparisonThreshold: 0.025
-      });
+        await (await page.jQuery('.deleteuser:eq(0)')).click();
+        const modal = await page.waitForSelector('.modal.open', { visible: true });
+        await page.focus('.modal.open #currentUserPassword');
+        await page.waitForTimeout(250);
+        expect(await modal.screenshot()).to.matchImage({
+            imageName: 'delete_single_confirm',
+            comparisonThreshold: 0.025
+        });
     });
 
     it('should delete a single user when the modal is confirmed is clicked', async function () {
@@ -232,8 +230,8 @@ describe("UsersManager", function () {
         await page.focus('.modal.open #currentUserPassword');
         await page.waitForTimeout(250);
         expect(await modal.screenshot()).to.matchImage({
-          imageName: 'delete_bulk_confirm',
-          comparisonThreshold: 0.025
+            imageName: 'delete_bulk_confirm',
+            comparisonThreshold: 0.025
         });
     });
 
