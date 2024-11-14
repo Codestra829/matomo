@@ -97,6 +97,56 @@ class NumberFormatter
     }
 
     /**
+     * Formats a given number in compact format
+     *
+     * @see \Piwik\NumberFormatter::format()
+     *
+     * @param string|int|float $value
+     * @param int $maximumFractionDigits
+     * @param int $minimumFractionDigits
+     * @return mixed|string
+     */
+    public function formatNumberCompact($value)
+    {
+        for ($factor = 1000000000000000000; $factor >= 1000; $factor /= 10) {
+            $translationId = 'Intl_NumberFormatNumberCompact' . $factor . 'One';
+            if ($value === $factor && $this->translator->translate($translationId) !== '') {
+                break;
+            }
+
+            $translationId = 'Intl_NumberFormatNumberCompact' . $factor . 'Other';
+            if ($value > $factor && $this->translator->translate($translationId) !== '') {
+                break;
+            }
+
+            $translationId = '';
+        }
+
+        $combactPattern = $this->translator->translate($translationId);
+
+        // In case no special formatting should be used, we use the default number format
+        if ($value < 1000 || $combactPattern === '0') {
+            $maximumFractionDigits = $this->getMaxFractionDigitsForCompactFormat(round($value));
+
+            return $this->formatNumber($value, $maximumFractionDigits, 0);
+        }
+
+        $charCount = substr_count($combactPattern, '0');
+
+        if ($charCount > 1) {
+            $factor /= pow(10, ($charCount - 1));
+        }
+
+        $value /= $factor;
+
+        $maximumFractionDigits = $this->getMaxFractionDigitsForCompactFormat($charCount);
+
+        $formattedNumber = $this->formatNumber($value, $maximumFractionDigits, 0);
+
+        return preg_replace(['/(0+)/', '/(\'\.\')/'], [$formattedNumber, '.'], $combactPattern);
+    }
+
+    /**
      * Formats given number as percent value
      * @param string|int|float $value
      * @param int $maximumFractionDigits
@@ -161,6 +211,68 @@ class NumberFormatter
         }
 
         return str_replace('¤', $currency, $value);
+    }
+
+
+    /**
+     * Formats a given number in compact format
+     *
+     * @see \Piwik\NumberFormatter::format()
+     *
+     * @param string|int|float $value
+     * @param int $maximumFractionDigits
+     * @param int $minimumFractionDigits
+     * @return mixed|string
+     */
+    public function formatCurrencyCompact($value, $currency)
+    {
+        for ($factor = 1000000000000000000; $factor >= 1000; $factor /= 10) {
+            $translationId = 'Intl_NumberFormatCurrencyCompact' . $factor . 'One';
+            if ($value === $factor && $this->translator->translate($translationId) !== '') {
+                break;
+            }
+
+            $translationId = 'Intl_NumberFormatCurrencyCompact' . $factor . 'Other';
+            if ($value > $factor && $this->translator->translate($translationId) !== '') {
+                break;
+            }
+
+            $translationId = '';
+        }
+
+        $combactPattern = $this->translator->translate($translationId);
+
+        // In case no special formatting should be used, we use the default number format
+        if ($value < 1000 || $combactPattern === '0') {
+            $precision = $this->getMaxFractionDigitsForCompactFormat(round($value));
+
+            return $this->formatCurrency($value, $currency, $precision);
+        }
+
+        $charCount = substr_count($combactPattern, '0');
+
+        if ($charCount > 1) {
+            $factor /= pow(10, ($charCount - 1));
+        }
+
+        $value /= $factor;
+
+        $precision = $this->getMaxFractionDigitsForCompactFormat($charCount);
+
+        $formattedNumber = $this->formatNumber($value, $precision, 0);
+
+        return preg_replace(['/(0+)/', '/(\'\.\')/', '/¤/'], [$formattedNumber, '.', $currency], $combactPattern);
+    }
+
+    private function getMaxFractionDigitsForCompactFormat(int $valueLength): int
+    {
+        if ($valueLength === 1) {
+            return 2;
+        } elseif ($valueLength === 2) {
+            return 1;
+        }
+
+        return 0;
     }
 
     /**
