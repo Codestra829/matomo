@@ -188,6 +188,8 @@ describe("UsersManager", function () {
         await page.waitForTimeout(250);
         await (await page.jQuery('.confirm-password-modal .modal-close.modal-no:visible')).click();
 
+        await page.mouse.move(-10, -10);
+        await page.waitForSelector('.pagedUsersList:not(.loading)');
 
         const concatenatedText = await page.evaluate(function() {
           let text = '';
@@ -199,7 +201,7 @@ describe("UsersManager", function () {
         expect(concatenatedText.trim()).to.equal('');
     });
 
-    it('should show password confirmation when deleting a single user', async function () {
+    it('should show password confirmation when deleting a single user after it was cancelled first', async function () {
       await (await page.jQuery('.deleteuser:eq(0)')).click();
       const modal = await page.waitForSelector('.modal.open', { visible: true });
       await page.focus('.modal.open #currentUserPassword');
