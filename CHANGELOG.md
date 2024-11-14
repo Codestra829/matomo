@@ -9,6 +9,12 @@ The Product Changelog at **[matomo.org/changelog](https://matomo.org/changelog)*
 ### Breaking Changes
 
 * The dependency `jQuery.dotdotdot` has been removed. Please use pure CSS instead or include the library in your plugin if needed.
+* The MultiSites API has been reworked. The previously incorrectly named metrics for the previous period now have correct names:
+  * `previous_Actions_nb_pageviews` => `previous_nb_pageviews`
+  * `previous_Goal_revenue` => `previous_revenue`
+  * `previous_Goal_nb_conversions` => `previous_nb_conversions`
+  * `previous_Goal_0_nb_conversions` => `previous_orders`
+  * `previous_Goal_0_revenue` => `previous_ecommerce_revenue`
 
 ## Deprecations
 
